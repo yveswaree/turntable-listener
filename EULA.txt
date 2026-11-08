@@ -1,0 +1,129 @@
+TURNTABLE LISTENER - END USER LICENSE AGREEMENT (FREEWARE)
+Version 1.0 - Last updated: November 8, 2026
+
+This is an agreement between you and yveswaree ("the author") about your use of
+Turntable Listener ("the Software"). By installing, copying or using the Software,
+you agree to these terms. If you don't agree, don't use the Software.
+
+
+1. LICENSE
+
+The author grants you a free, non-exclusive, non-transferable license to install and
+use the Software on any number of computers you own or control, for personal or
+commercial purposes (for example, playing records in a shop or café).
+
+The Software is licensed, not sold. The author keeps all rights not expressly
+granted here, including all copyright and other intellectual property in the
+Software, its name, icon and design.
+
+
+2. WHAT YOU MAY NOT DO
+
+You may not:
+  a) sell, rent, lease or charge for the Software, or bundle it with something
+     you sell;
+  b) modify, adapt, translate or create derivative works of the Software;
+  c) reverse engineer, decompile or disassemble the Software, except where the law
+     explicitly allows this despite this restriction;
+  d) remove or change any copyright notices, the name or branding of the Software;
+  e) redistribute the Software, in whole or in part, other than by linking to the
+     official download page: https://yveswaree.github.io/turntable-listener/. You may share
+     that link freely.
+  f) use the Software, or the API keys built into it, to access third-party
+     services for anything other than the Software's normal features.
+
+
+3. ONLINE SERVICES AND THIRD-PARTY CONTENT
+
+The Software can connect to services that are not run by the author:
+  - MusicBrainz (album and song information) and the Cover Art Archive (album
+    covers), run by the MetaBrainz Foundation;
+  - Discord (Rich Presence), only if you turn it on;
+  - ListenBrainz and Last.fm (scrobbling), only if you connect an account;
+  - GitHub (checking for new versions).
+
+Your use of these services is also subject to their own terms and privacy policies.
+The author isn't responsible for these services, their availability, or the
+accuracy of their data. Album artwork and song information belong to their
+respective owners and are shown only so you can see what you're playing.
+
+
+4. PRIVACY
+
+The Software does not send your audio anywhere. It processes sound from your
+turntable only on your computer, to play it and to detect when a side starts and
+ends.
+
+What leaves your computer, and only when the related feature is used:
+  - album searches and album look-ups (to MusicBrainz / Cover Art Archive);
+  - what you're currently playing (to Discord, if enabled);
+  - songs you've played and when (to ListenBrainz and/or Last.fm, if connected);
+  - a version check (to GitHub).
+
+Your settings, listening history, record shelf, cached album covers and any
+sign-in tokens are stored only on your computer (in %APPDATA%\TurntableListener).
+Sign-in tokens are encrypted using your Windows account. The author does not
+collect, receive or sell any of your data. Uninstalling the Software and deleting
+that folder removes it all.
+
+
+5. TRADEMARKS AND AFFILIATION
+
+Turntable Listener is an independent project. It is not affiliated with, endorsed
+by or sponsored by Sony, Audio-Technica, Discord, Last.fm, the MetaBrainz
+Foundation (MusicBrainz, ListenBrainz, Cover Art Archive), GitHub or any turntable
+manufacturer. All product names and trademarks belong to their respective owners
+and are used only to describe compatibility.
+
+
+6. NO WARRANTY
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+PARTICULAR PURPOSE AND NON-INFRINGEMENT. The author does not promise that the
+Software will be error-free, uninterrupted, or work with every turntable or sound
+device.
+
+Features such as side detection, song timing, flip reminders and the stylus-wear
+counter are estimates to help you, not guarantees. Always follow your turntable and
+stylus manufacturer's care instructions.
+
+
+7. LIMITATION OF LIABILITY
+
+TO THE MAXIMUM EXTENT PERMITTED BY LAW, THE AUTHOR WILL NOT BE LIABLE FOR ANY
+INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL OR PUNITIVE DAMAGES, OR ANY LOSS OF
+DATA, PROFITS OR EQUIPMENT (INCLUDING RECORDS, STYLI OR AUDIO EQUIPMENT), ARISING
+FROM YOUR USE OF OR INABILITY TO USE THE SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGES. Because the Software is free, the author's total
+liability for any claim is limited to zero, or the lowest amount the law allows.
+
+Some places don't allow some of these exclusions, so some of them may not apply to
+you. Nothing in this agreement limits rights you have under consumer protection
+laws that can't be waived.
+
+
+8. UPDATES AND CHANGES
+
+The author may release updates, change features, or stop providing the Software at
+any time. Newer versions may come with an updated version of this agreement; using
+a newer version means you accept the agreement that comes with it.
+
+
+9. TERMINATION
+
+This license ends automatically if you break any of its terms. When it ends, you
+must stop using the Software and delete your copies.
+
+
+10. GENERAL
+
+This agreement is governed by the laws of the State of California, USA, without
+regard to conflict-of-law rules. If any part of it is found unenforceable, the
+rest still applies. This is the entire agreement between you and the author about the
+Software.
+
+
+Contact: https://github.com/yveswaree/turntable-listener/issues
+
+Copyright (c) 2026 yveswaree. All rights reserved.

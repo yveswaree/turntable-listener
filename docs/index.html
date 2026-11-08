@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Turntable Listener</title>
+<meta name="description" content="Hear your USB turntable through your Windows PC, with album art, song names, flip reminders, Discord status and scrobbling. Free.">
+<meta property="og:title" content="Turntable Listener">
+<meta property="og:description" content="Hear your USB turntable through your PC, with album art, flip reminders, Discord and scrobbling. Free for Windows.">
+<meta property="og:image" content="https://yveswaree.github.io/turntable-listener/assets/screenshot-songs.png">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="favicon.ico">
+<style>
+  :root {
+    --bg: #140c08;
+    --bg-2: #24160f;
+    --card: rgba(255, 255, 255, 0.045);
+    --card-line: rgba(255, 255, 255, 0.08);
+    --ink: #f6f0ec;
+    --soft: rgba(246, 240, 236, 0.74);
+    --faint: rgba(246, 240, 236, 0.5);
+    --accent: #f08c28;
+    --accent-ink: #1e120a;
+    --radius: 18px;
+    --font: "Segoe UI Variable Text", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+    --font-display: "Segoe UI Variable Display", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    background-image:
+      radial-gradient(1100px 700px at 15% -10%, #4a2a1a 0%, transparent 60%),
+      radial-gradient(900px 600px at 100% 10%, #2a1810 0%, transparent 60%);
+    background-repeat: no-repeat;
+    color: var(--ink);
+    font: 16px/1.6 var(--font);
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 16px; }
+
+  /* Top bar */
+  header.top { display: flex; align-items: center; justify-content: space-between; padding: 22px 0; gap: 12px; }
+  .brand { display: flex; align-items: center; gap: 10px; color: var(--ink); font: 700 17px var(--font-display); }
+  .brand:hover { text-decoration: none; }
+  .brand img { width: 30px; height: 30px; }
+  nav.links { display: flex; gap: 22px; font-size: 15px; }
+  nav.links a { color: var(--soft); }
+  nav.links a:hover { color: var(--ink); text-decoration: none; }
+
+  /* Hero */
+  .hero { display: grid; grid-template-columns: 1fr; gap: 40px; padding: 40px 0 24px; text-align: center; }
+  .hero h1 { font: 800 clamp(36px, 6vw, 64px)/1.05 var(--font-display); letter-spacing: -0.02em; margin: 0; }
+  .hero h1 em { font-style: normal; color: var(--accent); }
+  .hero p.lede { font-size: clamp(17px, 2.2vw, 20px); color: var(--soft); max-width: 640px; margin: 18px auto 0; }
+  .cta { display: flex; justify-content: center; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 14px 26px; border-radius: 999px; font: 700 16px var(--font);
+    transition: transform .15s ease, background .15s ease;
+  }
+  .btn:hover { text-decoration: none; transform: translateY(-1px); }
+  .btn-primary { background: var(--accent); color: var(--accent-ink); box-shadow: 0 10px 30px rgba(240, 140, 40, .25); }
+  .btn-primary:hover { background: #f49c45; }
+  .btn-ghost { background: var(--card); color: var(--ink); border: 1px solid var(--card-line); }
+  .btn svg { width: 18px; height: 18px; }
+  .meta { margin-top: 14px; color: var(--faint); font-size: 14px; }
+  .shot {
+    width: 100%; height: auto; display: block; border-radius: 14px;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, .55), 0 0 0 1px rgba(255, 255, 255, .06);
+  }
+  .hero .shot { max-width: 960px; margin: 0 auto; }
+
+  /* Sections */
+  section { padding: 64px 0 8px; }
+  h2 { font: 800 clamp(26px, 3.6vw, 36px)/1.15 var(--font-display); margin: 0 0 10px; letter-spacing: -0.01em; }
+  .sub { color: var(--soft); margin: 0 0 30px; max-width: 680px; }
+
+  .features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .feature { background: var(--card); border: 1px solid var(--card-line); border-radius: var(--radius); padding: 22px; }
+  .feature .ic { width: 38px; height: 38px; border-radius: 10px; display: grid; place-items: center; background: rgba(240, 140, 40, .14); color: var(--accent); margin-bottom: 14px; }
+  .feature .ic svg { width: 20px; height: 20px; }
+  .feature h3 { font: 700 17px var(--font-display); margin: 0 0 6px; }
+  .feature p { margin: 0; color: var(--soft); font-size: 15px; }
+
+  .gallery { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+  figure { margin: 0; }
+  figcaption { color: var(--faint); font-size: 14px; margin-top: 10px; }
+
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; counter-reset: step; }
+  .step { background: var(--card); border: 1px solid var(--card-line); border-radius: var(--radius); padding: 22px; }
+  .step::before {
+    counter-increment: step; content: counter(step);
+    display: inline-grid; place-items: center; width: 30px; height: 30px; border-radius: 50%;
+    background: var(--accent); color: var(--accent-ink); font-weight: 800; margin-bottom: 12px;
+  }
+  .step h3 { margin: 0 0 6px; font: 700 17px var(--font-display); }
+  .step p { margin: 0; color: var(--soft); font-size: 15px; }
+
+  .note {
+    margin-top: 18px; padding: 18px 20px; border-radius: var(--radius);
+    background: rgba(240, 140, 40, .08); border: 1px solid rgba(240, 140, 40, .25); color: var(--soft); font-size: 15px;
+  }
+  .note strong { color: var(--ink); }
+
+  details { background: var(--card); border: 1px solid var(--card-line); border-radius: 14px; padding: 16px 20px; margin-bottom: 10px; }
+  summary { cursor: pointer; font-weight: 700; list-style: none; display: flex; justify-content: space-between; gap: 12px; }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: "+"; color: var(--accent); font-weight: 800; }
+  details[open] summary::after { content: "\2212"; }
+  details p, details ul { color: var(--soft); margin: 10px 0 0; font-size: 15px; }
+  details ul { padding-left: 20px; }
+
+  footer { margin-top: 72px; padding: 30px 0 46px; border-top: 1px solid var(--card-line); color: var(--faint); font-size: 14px; }
+  footer .row { display: flex; flex-wrap: wrap; gap: 10px 24px; justify-content: space-between; }
+  footer a { color: var(--soft); }
+
+  @media (max-width: 860px) {
+    .features, .steps { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 620px) {
+    nav.links { display: none; }
+    .features, .steps, .gallery { grid-template-columns: 1fr; }
+    .hero { padding-top: 16px; }
+    section { padding-top: 48px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .btn { transition: none; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="#"><img src="assets/icon-256.png" alt="">Turntable Listener</a>
+    <nav class="links">
+      <a href="#features">Features</a>
+      <a href="#screens">Screenshots</a>
+      <a href="#start">Get started</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+  </header>
+
+  <div class="hero">
+    <div>
+      <h1>Your record player,<br><em>on your PC.</em></h1>
+      <p class="lede">Plug in a USB turntable and hear it through your speakers or headphones, with the album cover, the song that's playing, a nudge when it's time to flip, and your vinyl on Discord and Last.fm.</p>
+      <div class="cta">
+        <a class="btn btn-primary" href="https://github.com/yveswaree/turntable-listener/releases/latest/download/TurntableListener.zip">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="m7 10 5 5 5-5"/><path d="M5 20h14"/></svg>
+          Download for Windows
+        </a>
+        <a class="btn btn-ghost" href="https://github.com/yveswaree/turntable-listener/releases">All versions</a>
+      </div>
+      <div class="meta">Free &middot; Windows 10 &amp; 11 &middot; No install needed</div>
+    </div>
+    <img class="shot" src="assets/turntable-listener.gif" width="960" height="600" alt="Turntable Listener playing a record: the album cover with a spinning record behind it, the current song scrolling, and music notes floating up.">
+  </div>
+
+  <section id="features">
+    <h2>Everything a record deserves</h2>
+    <p class="sub">It listens to your turntable and works out what's happening, so you can just drop the needle.</p>
+    <div class="features">
+      <div class="feature">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/></svg></div>
+        <h3>Hear it, instantly</h3>
+        <p>Plays your USB turntable through any speakers or headphones, with its own volume and a level meter.</p>
+      </div>
+      <div class="feature">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="m3 16 5-5 4 4 3-3 6 6"/></svg></div>
+        <h3>Cover &amp; song names</h3>
+        <p>Search an album once to get its cover and tracklist by side. It follows along and shows what's playing.</p>
+      </div>
+      <div class="feature">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></div>
+        <h3>Time to flip</h3>
+        <p>Hears the arm lift at the end of a side and lets you know, with an optional chime.</p>
+      </div>
+      <div class="feature">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg></div>
+        <h3>Discord &amp; scrobbling</h3>
+        <p>Show "Listening to" with the album art on Discord, and log every song to Last.fm or ListenBrainz.</p>
+      </div>
+      <div class="feature">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5"/><path d="M9 19V5"/><path d="m14 19 3-14 4 1-3 14z"/></svg></div>
+        <h3>Your record shelf</h3>
+        <p>Every album you play lands on a shelf of covers with play counts. Click one to put it back on.</p>
+      </div>
+      <div class="feature">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+        <h3>Stylus hours</h3>
+        <p>Counts how long the needle has been in the groove and reminds you when it's due for replacing.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="screens">
+    <h2>A closer look</h2>
+    <p class="sub">The backdrop takes its colours from the album you're playing, and the record bounces along to the music.</p>
+    <div class="gallery">
+      <figure><img class="shot" src="assets/screenshot-songs.png" width="1440" height="900" loading="lazy" alt="The player showing the current song, the next song, progress, and the tracklist split into Side A and Side B."><figcaption>Now playing, with the tracklist by side</figcaption></figure>
+      <figure><img class="shot" src="assets/screenshot-records.png" width="1440" height="900" loading="lazy" alt="The Records shelf: a grid of album covers with how many sides have been played and when."><figcaption>Your shelf of records and play counts</figcaption></figure>
+      <figure><img class="shot" src="assets/screenshot-ended.png" width="1440" height="900" loading="lazy" alt="The player saying Side B finished, flip the record and press start."><figcaption>It knows when a side has finished</figcaption></figure>
+      <figure><img class="shot" src="assets/screenshot-settings.png" width="1440" height="900" loading="lazy" alt="Settings with audio devices, arm-up calibration and the stylus hours counter."><figcaption>Settings, calibration and stylus hours</figcaption></figure>
+    </div>
+  </section>
+
+  <section id="start">
+    <h2>Up and running in a minute</h2>
+    <p class="sub">No installer. A short setup finds your turntable and learns what its silence sounds like.</p>
+    <div class="steps">
+      <div class="step"><h3>Download &amp; unzip</h3><p>Grab the zip, unzip it anywhere (Documents is fine), and open <strong>TurntableListener.exe</strong>.</p></div>
+      <div class="step"><h3>Pick your turntable</h3><p>Plug it in with USB. The setup suggests the right input, usually "USB Audio CODEC".</p></div>
+      <div class="step"><h3>Drop the needle</h3><p>That's it. Search for the album to get the cover and song names, and it takes care of the rest.</p></div>
+    </div>
+    <div class="note">
+      <strong>Windows may say "Windows protected your PC".</strong> That's normal for new apps from independent developers that aren't from a big company yet. Click <strong>More info</strong>, then <strong>Run anyway</strong>. You only need to do this once.
+    </div>
+  </section>
+
+  <section id="faq">
+    <h2>Questions</h2>
+    <details>
+      <summary>Which turntables does it work with?</summary>
+      <p>Any turntable that connects to your PC with a USB cable and shows up in Windows as a recording device. That includes models from Sony, Audio-Technica and many others. Bluetooth-only turntables aren't supported.</p>
+    </details>
+    <details>
+      <summary>How does it know which song is playing?</summary>
+      <p>You search for the album once. It gets the tracklist and song lengths from MusicBrainz, starts timing when the music begins, and re-syncs at the quiet gap between songs. You can nudge it with the previous/next buttons or by dragging the progress bar.</p>
+    </details>
+    <details>
+      <summary>Does it record or upload my music?</summary>
+      <p>No. Sound from your turntable is only played and measured on your PC. Nothing is recorded or uploaded. See privacy below for what does go online.</p>
+    </details>
+    <details>
+      <summary>What do I need?</summary>
+      <ul>
+        <li>Windows 10 or 11</li>
+        <li>A USB turntable</li>
+        <li>An internet connection for album covers, Discord and scrobbling (playing records works offline)</li>
+      </ul>
+    </details>
+    <details id="privacy">
+      <summary>Privacy</summary>
+      <p>Album searches go to MusicBrainz and covers come from the Cover Art Archive. Discord, ListenBrainz and Last.fm only see what you're playing if you turn them on. Once a day it checks GitHub for a new version. Your settings, history and sign-ins stay on your PC, and sign-ins are encrypted with your Windows account. There's no tracking or analytics.</p>
+    </details>
+    <details>
+      <summary>Something isn't working</summary>
+      <p>Please <a href="https://github.com/yveswaree/turntable-listener/issues">open an issue</a> and say which turntable you have. If the app showed an error, attach <strong>crash.log</strong> (Settings &rarr; About &rarr; Open the data folder). For side-detection problems, turn on the diagnostics log in the same place, play a side, and attach <strong>levels.log</strong>.</p>
+    </details>
+  </section>
+
+  <footer>
+    <div class="row">
+      <div>&copy; 2026 Turntable Listener &middot; Free to use under the <a href="https://github.com/yveswaree/turntable-listener/blob/main/EULA.txt">license terms</a></div>
+      <div><a href="https://github.com/yveswaree/turntable-listener/releases">Releases</a> &middot; <a href="https://github.com/yveswaree/turntable-listener/issues">Report a problem</a></div>
+    </div>
+    <p>Album information from <a href="https://musicbrainz.org">MusicBrainz</a> and covers from the <a href="https://coverartarchive.org">Cover Art Archive</a>. Turntable Listener is an independent project and isn't affiliated with Sony, Audio-Technica, Discord, Last.fm or the MetaBrainz Foundation.</p>
+  </footer>
+</div>
+</body>
+</html>
