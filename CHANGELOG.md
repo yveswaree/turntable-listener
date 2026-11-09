@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.0
+
+- New: import your Discogs collection onto the Records shelf (Records → Import from Discogs). Public collections need no sign-in; "Refresh from Discogs" adds new records later
+- Imported records are matched to the exact pressing on MusicBrainz when possible (for song lengths and covers), otherwise Discogs' own tracklist and cover are used
+- Play counts are kept when an imported record gets matched
+
 ## 1.0.1
 
 - Fixed: after a side ended, the app could think the needle dropped again a few seconds later (from the arm returning and the motor stopping) and start "playing"

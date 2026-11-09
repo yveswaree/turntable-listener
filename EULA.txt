@@ -40,6 +40,7 @@ The Software can connect to services that are not run by the author:
     covers), run by the MetaBrainz Foundation;
   - Discord (Rich Presence), only if you turn it on;
   - ListenBrainz and Last.fm (scrobbling), only if you connect an account;
+  - Discogs (reading your collection and record details), only if you import from it;
   - GitHub (checking for new versions).
 
 Your use of these services is also subject to their own terms and privacy policies.
@@ -58,6 +59,7 @@ What leaves your computer, and only when the related feature is used:
   - album searches and album look-ups (to MusicBrainz / Cover Art Archive);
   - what you're currently playing (to Discord, if enabled);
   - songs you've played and when (to ListenBrainz and/or Last.fm, if connected);
+  - your Discogs username and record look-ups (to Discogs, if you import from it);
   - a version check (to GitHub).
 
 Your settings, listening history, record shelf, cached album covers and any
@@ -71,7 +73,7 @@ that folder removes it all.
 
 Turntable Listener is an independent project. It is not affiliated with, endorsed
 by or sponsored by Sony, Audio-Technica, Discord, Last.fm, the MetaBrainz
-Foundation (MusicBrainz, ListenBrainz, Cover Art Archive), GitHub or any turntable
+Foundation (MusicBrainz, ListenBrainz, Cover Art Archive), Discogs, GitHub or any turntable
 manufacturer. All product names and trademarks belong to their respective owners
 and are used only to describe compatibility.
 

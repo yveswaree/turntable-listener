@@ -12,7 +12,7 @@
 - **Flip reminders**: it hears the arm lift at the end of a side and tells you
 - **Discord**: "Listening to" with the album art
 - **Scrobbling** to Last.fm and ListenBrainz
-- **Your record shelf**: every album you play, with play counts
+- **Your record shelf**: every album you play, with play counts, or import your collection from Discogs
 - **Stylus hours**: reminds you when the needle is due for replacing
 - **Music visuals**: the record bounces, notes float, and the backdrop takes the album's colours
 
@@ -27,7 +27,7 @@
 
 ## Privacy
 
-Your audio never leaves your PC. Album searches go to MusicBrainz, and covers come from the Cover Art Archive. Discord, ListenBrainz and Last.fm only see what you're playing if you turn them on, and a daily version check goes to GitHub. Settings, history and sign-ins are stored only on your PC. There's no tracking.
+Your audio never leaves your PC. Album searches go to MusicBrainz, and covers come from the Cover Art Archive. Discord, ListenBrainz and Last.fm only see what you're playing if you turn them on, Discogs is only contacted if you import from it, and a daily version check goes to GitHub. Settings, history and sign-ins are stored only on your PC. There's no tracking.
 
 ## Reporting a problem
 
