@@ -38,3 +38,5 @@ Your audio never leaves your PC. Album searches go to MusicBrainz, and covers co
 Turntable Listener is free to use but not open source. See [EULA.txt](EULA.txt).
 
 Album information from [MusicBrainz](https://musicbrainz.org), covers from the [Cover Art Archive](https://coverartarchive.org). Not affiliated with Sony, Audio-Technica, Discord, Last.fm or the MetaBrainz Foundation.
+
+© 2026 yveswaree · Developed with coding and deployment assistance from Claude.
