@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Listening Party</title>
+<meta name="description" content="Listen along to a friend's record player, live, with Turntable Listener.">
+<meta name="robots" content="noindex">
+<link rel="icon" href="../favicon.ico">
+<style>
+  :root {
+    --bg: #140c08;
+    --card: rgba(255, 255, 255, 0.05);
+    --line: rgba(255, 255, 255, 0.09);
+    --ink: #f6f0ec;
+    --soft: rgba(246, 240, 236, 0.74);
+    --faint: rgba(246, 240, 236, 0.5);
+    --accent: #f08c28;
+    --accent-ink: #1e120a;
+    --good: #5ad278;
+    --font: "Segoe UI Variable Text", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+    --display: "Segoe UI Variable Display", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100vh; color: var(--ink); font: 16px/1.55 var(--font);
+    background: var(--bg) radial-gradient(1000px 700px at 20% -10%, var(--tint, #4a2a1a) 0%, transparent 65%) no-repeat;
+    transition: background-color .8s;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--accent); }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 0 16px 48px; }
+  header { display: flex; align-items: center; gap: 10px; padding: 20px 0; font: 700 16px var(--display); }
+  header a { color: var(--ink); text-decoration: none; display: flex; align-items: center; gap: 10px; }
+  header img { width: 28px; height: 28px; }
+
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 22px; padding: 28px; }
+  .pill { display: inline-flex; align-items: center; gap: 8px; padding: 5px 12px; border-radius: 999px;
+          background: rgba(0, 0, 0, .3); font: 700 12px var(--font); letter-spacing: .06em; color: var(--soft); }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--faint); }
+  .dot.live { background: var(--good); box-shadow: 0 0 0 4px rgba(90, 210, 120, .15); }
+  .dot.warn { background: var(--accent); }
+
+  /* Join form */
+  .join h1 { font: 800 clamp(28px, 5vw, 40px)/1.1 var(--display); margin: 8px 0 10px; }
+  .join p { color: var(--soft); margin: 0 0 22px; }
+  .row { display: flex; gap: 10px; flex-wrap: wrap; }
+  input[type=text] {
+    flex: 1 1 220px; min-width: 0; padding: 14px 18px; border-radius: 999px; border: 1px solid var(--line);
+    background: rgba(0, 0, 0, .3); color: var(--ink); font: 600 17px var(--font); letter-spacing: .04em; text-transform: uppercase;
+  }
+  input[type=text]::placeholder { text-transform: none; letter-spacing: 0; color: var(--faint); font-weight: 400; }
+  button {
+    padding: 14px 26px; border-radius: 999px; border: 0; cursor: pointer;
+    background: var(--accent); color: var(--accent-ink); font: 700 16px var(--font);
+  }
+  button:hover { background: #f49c45; }
+  button.ghost { background: rgba(255, 255, 255, .08); color: var(--ink); }
+  .err { color: var(--accent); margin-top: 14px; min-height: 1.5em; }
+
+  /* Player */
+  .player { display: grid; grid-template-columns: 280px 1fr; gap: 32px; align-items: center; }
+  .cover {
+    width: 100%; aspect-ratio: 1; border-radius: 6px; object-fit: cover; display: block;
+    background: #2a1a12 center/40% no-repeat; box-shadow: 0 24px 60px rgba(0, 0, 0, .5);
+  }
+  .album { color: var(--faint); font: 700 12px var(--font); letter-spacing: .08em; text-transform: uppercase; margin-top: 14px; }
+  .album-title { font: 700 22px/1.2 var(--display); margin: 4px 0 2px; }
+  .album-artist { color: var(--soft); }
+  .now { display: flex; align-items: center; gap: 12px; margin: 14px 0 6px; }
+  .badge { background: var(--accent); color: var(--accent-ink); font: 800 15px var(--display); border-radius: 7px; padding: 3px 9px; flex: none; }
+  .song { font: 800 clamp(22px, 3.4vw, 32px)/1.15 var(--display); overflow-wrap: anywhere; }
+  .sub { color: var(--soft); min-height: 1.5em; }
+  .bar { height: 6px; border-radius: 3px; background: rgba(255, 255, 255, .15); margin: 22px 0 8px; overflow: hidden; }
+  .bar i { display: block; height: 100%; width: 0; background: var(--accent); border-radius: 3px; }
+  .times { display: flex; justify-content: space-between; color: var(--faint); font-size: 13px; }
+  .controls { display: flex; align-items: center; gap: 16px; margin-top: 22px; flex-wrap: wrap; }
+  .vol { display: flex; align-items: center; gap: 10px; color: var(--soft); font-size: 14px; }
+  input[type=range] { accent-color: var(--accent); width: 140px; }
+  .meta { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 18px; }
+  footer { color: var(--faint); font-size: 13px; margin-top: 26px; }
+  .hidden { display: none !important; }
+
+  @media (max-width: 680px) {
+    .player { grid-template-columns: 1fr; gap: 20px; }
+    .cover { max-width: 320px; margin: 0 auto; }
+    .card { padding: 20px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header><a href="../"><img src="../assets/icon-256.png" alt="">Turntable Listener</a></header>
+
+  <!-- Enter a code -->
+  <section id="join" class="card join hidden">
+    <span class="pill"><span class="dot"></span>LISTENING PARTY</span>
+    <h1>Join a listening party</h1>
+    <p>Enter the code your friend shared to hear their record live.</p>
+    <form id="joinForm" class="row">
+      <input id="codeInput" type="text" placeholder="Party code, like VINYL-7K2QX" autocomplete="off" spellcheck="false" maxlength="11">
+      <button type="submit">Join</button>
+    </form>
+    <div id="joinErr" class="err"></div>
+  </section>
+
+  <!-- The party -->
+  <section id="party" class="card hidden">
+    <div class="meta">
+      <span class="pill"><span id="liveDot" class="dot"></span><span id="liveText">CONNECTING</span></span>
+      <span class="pill" id="countPill">0 LISTENING</span>
+      <span class="pill" id="codePill"></span>
+    </div>
+    <div class="player">
+      <div>
+        <img id="cover" class="cover" alt="">
+      </div>
+      <div>
+        <div class="album" id="albumLabel">Now playing</div>
+        <div class="album-title" id="albumTitle">Waiting for the host...</div>
+        <div class="album-artist" id="albumArtist"></div>
+        <div class="now"><span id="badge" class="badge hidden"></span><span id="song" class="song"></span></div>
+        <div class="sub" id="sub"></div>
+        <div class="bar"><i id="barFill"></i></div>
+        <div class="times"><span id="tLeft">0:00</span><span id="tRight"></span></div>
+        <div class="controls">
+          <button id="listenBtn">&#9654;&nbsp; Listen</button>
+          <div class="vol"><span>Volume</span><input id="vol" type="range" min="0" max="100" value="80"></div>
+        </div>
+        <div id="partyErr" class="err"></div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    Live from a friend's turntable with <a href="../">Turntable Listener</a>. Nothing is recorded.
+    Album info from MusicBrainz and covers from the Cover Art Archive or Discogs.
+  </footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+  // Set when the party relay is deployed. ?relay= overrides it (for testing).
+  var RELAY_DEFAULT = "https://turntable-party.yveswaree.workers.dev";
+
+  var params = new URLSearchParams(location.search);
+  var relay = (params.get("relay") || RELAY_DEFAULT).replace(/\/+$/, "");
+  var code = (params.get("c") || "").toUpperCase().trim();
+  var $ = function (id) { return document.getElementById(id); };
+
+  var CODE_RE = /^VINYL-[A-Z0-9]{5}$/;
+  var ws = null, ctx = null, gain = null, decoder = null;
+  var nextTime = 0, state = null, ended = false, listening = false;
+  var stats = { batches: 0, frames: 0, played: 0 };
+  window.partyStats = stats;   // handy for checking from the browser console
+
+  function show(id) {
+    ["join", "party"].forEach(function (s) { $(s).classList.toggle("hidden", s !== id); });
+  }
+
+  function fmt(ms) {
+    if (!(ms >= 0)) ms = 0;
+    var s = Math.floor(ms / 1000);
+    return Math.floor(s / 60) + ":" + ("0" + (s % 60)).slice(-2);
+  }
+
+  // ------------------------------------------------------------ join form
+  function startJoin(msg) {
+    show("join");
+    $("joinErr").textContent = msg || "";
+    $("codeInput").value = code;
+    $("codeInput").focus();
+  }
+
+  $("joinForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var c = $("codeInput").value.toUpperCase().replace(/\s+/g, "");
+    if (/^[A-Z0-9]{5}$/.test(c)) c = "VINYL-" + c;
+    if (!CODE_RE.test(c)) { $("joinErr").textContent = "Codes look like VINYL-7K2QX."; return; }
+    code = c;
+    var u = new URL(location.href);
+    u.searchParams.set("c", code);
+    history.replaceState(null, "", u);
+    connect();
+  });
+
+  // ------------------------------------------------------------ connection
+  function connect() {
+    if (!relay) { startJoin("Listening parties aren't switched on yet."); return; }
+    if (!CODE_RE.test(code)) { startJoin(code ? "That doesn't look like a party code." : ""); return; }
+    show("party");
+    $("codePill").textContent = code;
+    setLive("CONNECTING", "");
+    ws = new WebSocket(relay.replace(/^http/, "ws") + "/party/" + code + "/listen");
+    ws.binaryType = "arraybuffer";
+    ws.onmessage = function (e) {
+      if (typeof e.data === "string") onMessage(JSON.parse(e.data));
+      else onAudio(e.data);
+    };
+    ws.onclose = function (e) {
+      if (ended) return;
+      if (e.code === 4404) { startJoin("There's no party with that code. It may have ended."); return; }
+      if (e.code === 4429) { setError("This party is full (10 listeners)."); setLive("FULL", "warn"); return; }
+      if (e.code === 4410) { partyEnded(e.reason); return; }
+      setLive("RECONNECTING", "warn");
+      setTimeout(connect, 3000);
+    };
+  }
+
+  function setLive(text, kind) {
+    $("liveText").textContent = text;
+    $("liveDot").className = "dot" + (kind ? " " + kind : "");
+  }
+  function setError(t) { $("partyErr").textContent = t || ""; }
+
+  function partyEnded(reason) {
+    ended = true;
+    setLive("ENDED", "");
+    setError(reason || "The party has ended.");
+    $("listenBtn").disabled = true;
+    if (ctx) ctx.close();
+  }
+
+  function onMessage(m) {
+    if (m.t === "state") { state = m; render(); }
+    else if (m.t === "count") $("countPill").textContent = m.n + " LISTENING";
+    else if (m.t === "host") { if (!m.online) setLive("HOST OFFLINE", "warn"); else render(); }
+    else if (m.t === "ended") partyEnded(m.reason);
+  }
+
+  // ------------------------------------------------------------ now playing
+  function render() {
+    var s = state || {};
+    if (s.cover) { if ($("cover").src !== s.cover) $("cover").src = s.cover; }
+    $("albumTitle").textContent = s.album || "Spinning a record";
+    $("albumArtist").textContent = s.artist || "";
+    $("albumLabel").textContent = s.side ? "Now playing  ·  Side " + s.side : "Now playing";
+    var playing = s.status === "playing";
+    $("badge").classList.toggle("hidden", !(playing && s.track));
+    $("badge").textContent = s.track || "";
+    $("song").textContent = playing ? (s.title || "Playing a record")
+      : s.status === "ended" ? (s.note || "Side finished")
+      : s.status === "stopped" ? "Paused" : "Waiting for the needle...";
+    $("sub").textContent = playing && s.trackArtist && s.trackArtist !== s.artist ? "by " + s.trackArtist
+      : s.status === "ended" ? "The host is flipping the record." : "";
+    if (!ended) setLive(playing ? "LIVE" : s.status === "stopped" ? "PAUSED" : "WAITING", playing ? "live" : "warn");
+  }
+
+  function tick() {
+    var s = state;
+    if (s && s.status === "playing" && s.start && s.len) {
+      var into = Date.now() - s.start;
+      $("barFill").style.width = Math.max(0, Math.min(100, into / s.len * 100)) + "%";
+      $("tLeft").textContent = fmt(into);
+      $("tRight").textContent = "-" + fmt(s.len - into);
+    } else {
+      $("barFill").style.width = s && s.status === "ended" ? "100%" : "0%";
+      $("tLeft").textContent = ""; $("tRight").textContent = "";
+    }
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+
+  // ------------------------------------------------------------ audio
+  $("vol").addEventListener("input", function () { if (gain) gain.gain.value = Math.pow($("vol").value / 100, 2); });
+
+  $("listenBtn").addEventListener("click", function () {
+    if (listening) {   // toggle off
+      listening = false;
+      if (ctx) ctx.suspend();
+      $("listenBtn").innerHTML = "&#9654;&nbsp; Listen";
+      return;
+    }
+    if (!("AudioDecoder" in window)) {
+      setError("Your browser can't play the party audio. Try a recent Chrome, Edge, Firefox or Safari.");
+      return;
+    }
+    if (!ctx) {
+      ctx = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: 48000, latencyHint: "playback" });
+      gain = ctx.createGain();
+      gain.gain.value = Math.pow($("vol").value / 100, 2);
+      gain.connect(ctx.destination);
+      decoder = new AudioDecoder({ output: onDecoded, error: function (e) { setError("Audio problem: " + e.message); } });
+      decoder.configure({ codec: "opus", sampleRate: 48000, numberOfChannels: 2 });
+    }
+    ctx.resume();
+    nextTime = 0;
+    listening = true;
+    setError("");
+    $("listenBtn").innerHTML = "&#10074;&#10074;&nbsp; Mute";
+  });
+
+  // Batch: [u32 first frame seq][u8 count] then per frame [u16 length][opus packet]
+  function onAudio(buf) {
+    stats.batches++;
+    if (!listening || !decoder || decoder.state !== "configured") return;
+    var dv = new DataView(buf), seq = dv.getUint32(0), n = dv.getUint8(4), off = 5;
+    for (var i = 0; i < n && off + 2 <= buf.byteLength; i++) {
+      var len = dv.getUint16(off);
+      if (off + 2 + len > buf.byteLength) break;
+      decoder.decode(new EncodedAudioChunk({ type: "key", timestamp: (seq + i) * 20000, data: new Uint8Array(buf, off + 2, len) }));
+      off += 2 + len;
+      stats.frames++;
+    }
+  }
+
+  function onDecoded(data) {
+    if (!listening) { data.close(); return; }
+    var frames = data.numberOfFrames, chans = Math.min(2, data.numberOfChannels);
+    var ab = ctx.createBuffer(2, frames, data.sampleRate);
+    for (var ch = 0; ch < 2; ch++) {
+      var tmp = new Float32Array(frames);
+      data.copyTo(tmp, { planeIndex: Math.min(ch, chans - 1), format: "f32-planar" });
+      ab.copyToChannel(tmp, ch);
+      if (ch === 0) for (var k = 0; k < frames; k += 8) { var a = Math.abs(tmp[k]); if (a > (stats.peak || 0)) stats.peak = a; }
+    }
+    data.close();
+    var now = ctx.currentTime;
+    // Keep ~0.4 s of audio queued: enough to ride out network hiccups, little enough to stay close to live.
+    if (nextTime < now + 0.05) nextTime = now + 0.4;
+    if (nextTime > now + 2.0) return;   // fell far behind: drop to catch up
+    var src = ctx.createBufferSource();
+    src.buffer = ab;
+    src.connect(gain);
+    src.start(nextTime);
+    nextTime += ab.duration;
+    stats.played++;
+  }
+
+  // ------------------------------------------------------------ start
+  if (code) connect(); else startJoin("");
+})();
+</script>
+</body>
+</html>
